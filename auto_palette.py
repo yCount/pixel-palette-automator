@@ -1,7 +1,6 @@
 import cv2
 import numpy
 
-
 def print_image(image):
     for column in range(len(image)):
         for row in range(len(image)):
@@ -50,3 +49,30 @@ def trim_channel4(image, tolerance):
             pixel = image[row, column]
             if pixel[3] >= tolerance:
                 pixel[4] = 255
+
+
+def extract_palette(image):
+    # extracting all colors, also removing black & whites for the set if there are one
+    colors = set()
+    for row in range(len(image)):
+        for column in range(len(image[row])):
+            colorRGB = (image[row, column][2], image[row, column][1], image[row, column][0])
+            if colorRGB == (0, 0, 0) or colorRGB == (255, 255, 255):
+                continue
+
+            if colorRGB not in colors:
+                colors.add(colorRGB)
+
+    # preparing string to output
+    str_palette = str()
+    for colorRGB in colors:
+        str_palette += color_into_hexcode(colorRGB) + " "
+
+    return str_palette
+
+
+def color_into_hexcode(colorRGB) -> str:
+    hexcode = "#"
+    for value in colorRGB:
+        hexcode += str(hex(value)).removeprefix("0x")
+    return hexcode
