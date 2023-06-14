@@ -2,7 +2,7 @@ import numpy
 
 
 class Palette:
-    def __init__(self, colors):
+    def __init__(self, *input_colors):
 
         def check_hex(string) -> bool:
             for char in string:
@@ -10,37 +10,42 @@ class Palette:
                     return False
             return True
 
-        if any(not isinstance(color, str) for color in colors) and any(
-                not isinstance(color, list) for color in colors):
-            raise ValueError("no color parameter is properly formatted")
+        def rgb_to_hex(rgb):
+            for value in rgb:
+                if value < 0 or value > 255:
+                    raise TypeError("only RGB values that are between 0 and 255 are accepted")
+            return '#%02x%02x%02x' % rgb
 
-        for color in colors:
-            if type(color) is list:
+        formatted_colors = []
+
+        for color in input_colors:
+            if type(color) is tuple:
                 if len(color) == 3:
+                    formatted_colors.append(rgb_to_hex(color))
+                    continue
+                elif len(color) == 4:
+                    color = color[0:3]
+                    formatted_colors.append(rgb_to_hex(color))
                     continue
                 else:
                     raise ValueError(
-                        "RGB color value is not properly formatted at {}th index".format(colors.index(color)))
+                        "RGB color value is not properly formatted at {}th index".format(input_colors.index(color)))
             elif type(color) is str:
                 for piece in color.split():
                     if (len(piece) == 4 or len(piece) == 7) and piece.startswith('#') and check_hex(
                             piece.removeprefix('#')):
+                        formatted_colors.append(piece)
                         continue
                     elif (len(piece) == 3 or len(piece) == 6) and check_hex(piece):
+                        piece = '#' + piece
+                        formatted_colors.append(piece)
                         continue
                     else:
                         raise ValueError(
-                            "hex color value is not properly formatted at {}th index".format(colors.index(color)))
+                            "hex color value is not properly formatted at {}th index".format(input_colors.index(color)))
 
-        # the input has been verified as a valid input up to this line
-
-        # nested conditionals should be edited to modify the input based on the path it goes to store it in a
-        # standard and efficient way
-
-        self.colors = colors
-
-    def __str__(self):
-        pass
+        self.colors = formatted_colors
+        self.size = len(formatted_colors)
 
 
 def print_image(image):
