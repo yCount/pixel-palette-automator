@@ -139,10 +139,10 @@ def display_palettes(*palettes):
     # should add a sorting algorithm to display colors aligned with corresponding color matches on other palettes
     # this sorting should be executed only when each input palette is in equal size
 
-
     for palette in range(len(palettes)):
-        Label(master, text="Palette {}".format(palette + 1)).grid(row=palette, column=0, sticky=W, pady=2)
+        Label(master, text="Palette {}".format(palette + 1)).grid(row=palette*2, column=0, sticky=W, pady=2)
         for color in range(palettes[palette].size):
             canvas_widget = tkinter.Canvas(master, background=palettes[palette].colors[color], width=125, height=100)
-            canvas_widget.grid(row=palette, column=color + 1)
+            canvas_widget.grid(row=palette * 2, column=color + 1)
+            Label(master, text=palettes[palette].colors[color]).grid(row=(palette * 2) + 1, column=color + 1, sticky=W, pady=2)
     master.mainloop()
