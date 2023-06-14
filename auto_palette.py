@@ -120,6 +120,8 @@ def extract_palette(image):
     for colorRGB in colors:
         str_palette += color_into_hexcode(colorRGB) + " "
 
+    # should add here a sorting algorithm for colors to have similar colors side by side (likes shades or contrasts)
+
     return str_palette
 
 
