@@ -46,6 +46,8 @@ class Palette:
                         raise ValueError(
                             "hex color value is not properly formatted at {}th index".format(input_colors.index(color)))
 
+        # should add here a sorting algorithm for colors to have similar colors side by side (likes shades or contrasts)
+
         self.colors = formatted_colors
         self.size = len(formatted_colors)
 
@@ -118,6 +120,8 @@ def extract_palette(image):
     for colorRGB in colors:
         str_palette += color_into_hexcode(colorRGB) + " "
 
+    # should add here a sorting algorithm for colors to have similar colors side by side (likes shades or contrasts)
+
     return str_palette
 
 
@@ -131,6 +135,10 @@ def color_into_hexcode(colorRGB) -> str:
 def display_palettes(*palettes):
     master = Tk()
     master.title("Palette Display")
+
+    # should add a sorting algorithm to display colors aligned with corresponding color matches on other palettes
+    # this sorting should be executed only when each input palette is in equal size
+
 
     for palette in range(len(palettes)):
         Label(master, text="Palette {}".format(palette + 1)).grid(row=palette, column=0, sticky=W, pady=2)
