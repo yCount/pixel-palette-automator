@@ -140,9 +140,24 @@ def display_palettes(*palettes):
     # this sorting should be executed only when each input palette is in equal size
 
     for palette in range(len(palettes)):
-        Label(master, text="Palette {}".format(palette + 1)).grid(row=palette*2, column=0, sticky=W, pady=2)
+        Label(master, text="Palette {}".format(palette + 1)).grid(row=palette * 2, column=0, sticky=W, pady=2)
         for color in range(palettes[palette].size):
             canvas_widget = tkinter.Canvas(master, background=palettes[palette].colors[color], width=125, height=100)
-            canvas_widget.grid(row=palette * 2, column=color + 1)
-            Label(master, text=palettes[palette].colors[color]).grid(row=(palette * 2) + 1, column=color + 1, sticky=W, pady=2)
+            canvas_widget.grid(row=palette * 2, column=2*color + 1)
+            Button(master, text="<--\n-->", height=6).grid(row=palette * 2, column=2 * color+2)
+            hex_value = Text(master, width=15, height=1)
+            hex_value.grid(row=(palette * 2) + 1, column=2 * color + 1, sticky=W, pady=2)
+            hex_value.insert(INSERT, "#")
+        Label(master,width=2,height=6).grid(row=palette * 2, column=palettes[palette].size*2+1)
+
+        Button(master, text="\n\n-----------\n\n", width=7, height=6).grid(row=palette * 2,
+                                                                           column=palettes[
+                                                                                      palette].size * 2 + 2)
+        Button(master, text="|\n|\n------|------\n|\n|", width=8, height=6).grid(row=palette * 2,
+                                                                                  column=palettes[palette].size * 2 + 3)
+
+        Button(master, text="DONE", width=17, height=1).grid(row=len(palettes)+1,
+                                                                                  column=palettes[palette].size * 2 + 2, columnspan=2)
+
+
     master.mainloop()
