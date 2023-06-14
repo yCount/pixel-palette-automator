@@ -137,6 +137,7 @@ def display_palettes(*palettes):
     # should add a sorting algorithm to display colors aligned with corresponding color matches on other palettes
     # this sorting should be executed only when each input palette is in equal size
 
+
     for palette in range(len(palettes)):
         Label(master, text="Palette {}".format(palette + 1)).grid(row=palette, column=0, sticky=W, pady=2)
         for color in range(palettes[palette].size):
