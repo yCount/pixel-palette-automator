@@ -1,5 +1,47 @@
-import cv2
 import numpy
+
+
+class Palette:
+    def __init__(self, colors):
+
+        def check_hex(string) -> bool:
+            for char in string:
+                if (char < '0' or char > '9') and (char < 'A' or char > 'F') and (char < 'a' or char > 'f'):
+                    return False
+            return True
+
+        if any(not isinstance(color, str) for color in colors) and any(
+                not isinstance(color, list) for color in colors):
+            raise ValueError("no color parameter is properly formatted")
+
+        for color in colors:
+            if type(color) is list:
+                if len(color) == 3:
+                    continue
+                else:
+                    raise ValueError(
+                        "RGB color value is not properly formatted at {}th index".format(colors.index(color)))
+            elif type(color) is str:
+                for piece in color.split():
+                    if (len(piece) == 4 or len(piece) == 7) and piece.startswith('#') and check_hex(
+                            piece.removeprefix('#')):
+                        continue
+                    elif (len(piece) == 3 or len(piece) == 6) and check_hex(piece):
+                        continue
+                    else:
+                        raise ValueError(
+                            "hex color value is not properly formatted at {}th index".format(colors.index(color)))
+
+        # the input has been verified as a valid input up to this line
+
+        # nested conditionals should be edited to modify the input based on the path it goes to store it in a
+        # standard and efficient way
+
+        self.colors = colors
+
+    def __str__(self):
+        pass
+
 
 def print_image(image):
     for column in range(len(image)):
@@ -35,7 +77,8 @@ def flipped_vertically(image) -> numpy.ndarray:
 # Note that it inserts the input
 def trim_channel4(image, tolerance):
     """
-    Trims the png image with relatively less 4 channel value pixels based on the given tolerance value from 0 (being least tolerant) to 255 (being most tolerant)
+    Trims the png image with relatively less 4 channel value pixels based on the given tolerance value from 0 (being 
+    least tolerant) to 255 (being most tolerant) 
     """
 
     if not type(tolerance) is int:
@@ -76,3 +119,9 @@ def color_into_hexcode(colorRGB) -> str:
     for value in colorRGB:
         hexcode += str(hex(value)).removeprefix("0x")
     return hexcode
+
+
+def display_palettes(palettes):
+    for palette in palettes:
+        if type(palette) is Palette:
+            pass
