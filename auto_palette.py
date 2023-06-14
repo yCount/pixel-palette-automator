@@ -1,3 +1,5 @@
+import tkinter
+from tkinter import *
 import numpy
 
 
@@ -126,7 +128,13 @@ def color_into_hexcode(colorRGB) -> str:
     return hexcode
 
 
-def display_palettes(palettes):
-    for palette in palettes:
-        if type(palette) is Palette:
-            pass
+def display_palettes(*palettes):
+    master = Tk()
+    master.title("Palette Display")
+
+    for palette in range(len(palettes)):
+        Label(master, text="Palette {}".format(palette + 1)).grid(row=palette, column=0, sticky=W, pady=2)
+        for color in range(palettes[palette].size):
+            canvas_widget = tkinter.Canvas(master, background=palettes[palette].colors[color], width=125, height=100)
+            canvas_widget.grid(row=palette, column=color + 1)
+    master.mainloop()
