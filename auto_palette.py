@@ -142,25 +142,67 @@ def display_palettes(*palettes):
     # should add conditions that checks unordinary arguments such as no argument or image inputs
     # -if no arguments passed- then -create the window with no pre-made palette, so the users are going to create one themselves on gui-
 
+    # defining functions for the mouse behaviour
+
+    def drag_start(event):
+        widget = event.widget
+        print(widget)
+        if isinstance(widget, Label):
+            start = (event.x, event.y)
+            grid_info = widget.grid_info()
+            widget.bind("<B1-Motion>", lambda motion_event: drag_motion(motion_event, widget, start))
+            widget.bind("<ButtonRelease-1>", lambda end_event: drag_end(end_event, widget, grid_info))
+        else:
+            window.unbind("<ButtonRelease-1>")
+
+    def drag_motion(event, widget, start):
+        x = widget.winfo_x() + event.x - start[0]
+        y = widget.winfo_y() + event.y - start[1]
+        widget.lift()
+        widget.place(x=x, y=y)
+
+    def drag_end(event, widget, grid_info):
+        widget.lower()
+        x, y = window.winfo_pointerxy()
+        target_widget = window.winfo_containing(x, y)
+        if isinstance(target_widget, Label):
+            target_grid = target_widget.grid_info()
+            if target_widget.cget("text") == "<--->":
+                # decide whether it is going to place the color to the right or to the left
+
+                # shift all left labels to the right
+                color_to_right = target_grid['column']+1
+                while window.grid_slaves(target_grid['row'], color_to_right) is Label and window.grid_slaves(target_grid['row'], color_to_right).cget('bg') is not None:
+                    pass
+                # place the dropped Label
+                widget.grid(row=target_grid['row'], column=target_grid['column']+1)
+            elif target_widget.cget("text") == "|\n⌄":
+                pass
+            else:
+                # target & dropped label switch place
+                target_widget.grid(row=grid_info['row'], column=grid_info['column'])
+                widget.grid(row=target_grid['row'], column=target_grid['column'])
+        else:
+            widget.grid(row=grid_info['row'], column=grid_info['column'])
+
+    # constructing gui window
+
+    palette_row = 0
     for palette in range(len(palettes)):
-        Label(window, text="Palette {}".format(palette + 1)).grid(row=palette * 2, column=0, sticky=W, pady=2)
-        for color in range(palettes[palette].size):
-            canvas_widget = tkinter.Canvas(window, background=palettes[palette].colors[color], width=125, height=100)
-            canvas_widget.grid(row=palette * 2, column=2*color + 1)
-            Button(window, text="<--\n-->", height=6).grid(row=palette * 2, column=2 * color+2)
+        palette_row = (palette + 1) * 2
+        Label(window, text="Palette {}".format(palette_row + 1)).grid(row=palette_row * 2, column=0, sticky=S, pady=2)
+        for color_row in range(palettes[palette].size):
+            stack_label = Label(window, text="|\n⌄", width=15, height=2)
+            stack_label.grid(row=palette_row * 2 - 1, column=2 * color_row + 1)
+            color_widget = Label(window, background=palettes[palette].colors[color_row], width=6, height=3, text='',
+                                 anchor='sw')
+            color_widget.grid(row=palette_row * 2, column=2 * color_row + 1, pady=5, padx=5, sticky=N + S + W + E)
+            color_widget.bind("<Button-1>", drag_start)
             hex_value = Text(window, width=15, height=1)
-            hex_value.grid(row=(palette * 2) + 1, column=2 * color + 1, sticky=W, pady=2)
+            hex_value.grid(row=(palette_row * 2) + 1, column=2 * color_row + 1, sticky=W, pady=2)
             hex_value.insert(INSERT, "#")
-        Label(window,width=2,height=6).grid(row=palette * 2, column=palettes[palette].size*2+1)
 
-        Button(window, text="\n\n-----------\n\n", width=7, height=6).grid(row=palette * 2,
-                                                                           column=palettes[
-                                                                                      palette].size * 2 + 2)
-        Button(window, text="|\n|\n------|------\n|\n|", width=8, height=6).grid(row=palette * 2,
-                                                                                  column=palettes[palette].size * 2 + 3)
-
-        Button(window, text="DONE", width=17, height=1).grid(row=len(palettes)+1,
-                                                                                  column=palettes[palette].size * 2 + 2, columnspan=2)
-
+            if color_row < palettes[palette].size - 1:
+                Label(window, text="<--->", height=6).grid(row=palette_row * 2, column=2 * color_row + 2)
 
     window.mainloop()
