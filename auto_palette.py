@@ -1,5 +1,3 @@
-import tkinter
-from tkinter import *
 import numpy
 
 
@@ -130,37 +128,3 @@ def color_into_hexcode(colorRGB) -> str:
     for value in colorRGB:
         hexcode += str(hex(value)).removeprefix("0x")
     return hexcode
-
-
-def display_palettes(*palettes):
-    window = Tk()
-    window.title("Palette Display")
-
-    # should add a sorting algorithm to display colors aligned with corresponding color matches on other palettes
-    # this sorting should be executed only when each input palette is in equal size
-
-    # should add conditions that checks unordinary arguments such as no argument or image inputs
-    # -if no arguments passed- then -create the window with no pre-made palette, so the users are going to create one themselves on gui-
-
-    for palette in range(len(palettes)):
-        Label(window, text="Palette {}".format(palette + 1)).grid(row=palette * 2, column=0, sticky=W, pady=2)
-        for color in range(palettes[palette].size):
-            canvas_widget = tkinter.Canvas(window, background=palettes[palette].colors[color], width=125, height=100)
-            canvas_widget.grid(row=palette * 2, column=2*color + 1)
-            Button(window, text="<--\n-->", height=6).grid(row=palette * 2, column=2 * color+2)
-            hex_value = Text(window, width=15, height=1)
-            hex_value.grid(row=(palette * 2) + 1, column=2 * color + 1, sticky=W, pady=2)
-            hex_value.insert(INSERT, "#")
-        Label(window,width=2,height=6).grid(row=palette * 2, column=palettes[palette].size*2+1)
-
-        Button(window, text="\n\n-----------\n\n", width=7, height=6).grid(row=palette * 2,
-                                                                           column=palettes[
-                                                                                      palette].size * 2 + 2)
-        Button(window, text="|\n|\n------|------\n|\n|", width=8, height=6).grid(row=palette * 2,
-                                                                                  column=palettes[palette].size * 2 + 3)
-
-        Button(window, text="DONE", width=17, height=1).grid(row=len(palettes)+1,
-                                                                                  column=palettes[palette].size * 2 + 2, columnspan=2)
-
-
-    window.mainloop()
